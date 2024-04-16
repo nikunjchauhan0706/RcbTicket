@@ -121,7 +121,7 @@ def check_ticket_availability(recipient_contact_number, tickets_date):
 while True:
     # Example user data from the database or user input
     recipient_contact_number = "+916397253517"  # Recipient's phone number for notifications
-    tickets_date = "2024-05-04"
+    tickets_date = "2024-05-18"
 
     # for user in user_data:
     check_ticket_availability(recipient_contact_number, tickets_date)
