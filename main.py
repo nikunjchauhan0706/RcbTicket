@@ -10,11 +10,11 @@ from twilio.rest import Client
 
 # User-defined constants
 num_of_messages_to_send = 10  # Number of notification messages to send once tickets are available
-interval_between_messages = 60  # Seconds between each notification message
+interval_between_messages = 3  # Seconds between each notification message
 
 # Twilio account details for sending SMS
 account_sid = 'ACcfb63267ec1247ce61512868bfde601e'  # Twilio account SID
-auth_token = '409f7f8a83a7dccdcdef59a73aee6587'  # Twilio auth token
+auth_token = '409f7f8a83a7dccdcdef59a73aee6587' # Twilio auth token
 client = Client(account_sid, auth_token)  # Twilio client initialization
 twilio_contact_number = "+12057281280"    # Twilio phone number used for sending SMS
 
@@ -83,45 +83,41 @@ def check_ticket_availability(recipient_contact_number, tickets_date):
     tickets_available = False
     fetch_status_delay = 30
     
-    while not tickets_available:
-        try:
-            tickets_page = getPage(rcb_tickets_page_url)
-            tickets_bsobj = BeautifulSoup(tickets_page, features="html.parser")
-            available_tickets_dates = get_dates_of_available_tickets(tickets_bsobj)
+    try:
+        tickets_page = getPage(rcb_tickets_page_url)
+        tickets_bsobj = BeautifulSoup(tickets_page, features="html.parser")
+        available_tickets_dates = get_dates_of_available_tickets(tickets_bsobj)
 
-            for available_ticket_date in available_tickets_dates:
-                date_obj = datetime.strptime(available_ticket_date, "%A, %b %d, %Y %I:%M %p")
-                formatted_date = date_obj.strftime("%Y-%m-%d")
-                if formatted_date == tickets_date:
-                    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Tickets available. Sending message...")
-                    tickets_available = True
+        for available_ticket_date in available_tickets_dates:
+            date_obj = datetime.strptime(available_ticket_date, "%A, %b %d, %Y %I:%M %p")
+            formatted_date = date_obj.strftime("%Y-%m-%d")
+            if formatted_date == tickets_date:
+                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Tickets available. Sending message...")
+                tickets_available = True
 
-                    for message_num in range(num_of_messages_to_send):
-                        message = client.messages.create(
+                for message_num in range(num_of_messages_to_send):
+                    message = client.messages.create(
                             from_=twilio_contact_number,
                             body=f'The match tickets for {tickets_date} are available Nikunj. Login to {rcb_tickets_page_url} to book the tickets immediately.',
                             to=recipient_contact_number
                         )
-                        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Message sent successfully - {message_num + 1} time(s)")
+                    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Message sent successfully - {message_num + 1} time(s)")
 
-                        time.sleep(interval_between_messages)
+                    time.sleep(interval_between_messages)
 
-                    break
+                break
 
-            if not tickets_available:
-                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Tickets not available. Retrying in {fetch_status_delay} seconds...")
-                time.sleep(fetch_status_delay)
-        except Exception as e:
+        if not tickets_available:
+            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Tickets not available. Retrying in {fetch_status_delay} seconds...")
+            time.sleep(fetch_status_delay)
+    except Exception as e:
             print(f"Error occurred: {e}")
-            print("Restarting script...")
-            traceback.print_exc()  # Print the traceback for debugging
-            time.sleep(fetch_status_delay)  # Add a delay before restarting the script
 
 # Example usage
-while True:
+if __name__ == "__main__":
     # Example user data from the database or user input
     recipient_contact_number = "+916397253517"  # Recipient's phone number for notifications
-    tickets_date = "2024-05-18"
+    tickets_date = "2024-05-04"
 
     # for user in user_data:
     check_ticket_availability(recipient_contact_number, tickets_date)
