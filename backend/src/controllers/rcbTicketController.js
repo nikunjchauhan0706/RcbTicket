@@ -1,36 +1,14 @@
 const https = require("https");
 const { JSDOM } = require("jsdom");
 const { Twilio } = require("twilio");
+const { deleteItemById } = require("./itemController");
 
 // User-defined constants
 const num_of_messages_to_send = 10; // Number of notification messages to send once tickets are available
-const interval_between_messages = 3000; // Milliseconds between each notification message
-
-// Twilio account details for sending SMS
-const accountSid = "ACcfb63267ec1247ce61512868bfde601e"; // Twilio account SID
-const authToken = "409f7f8a83a7dccdcdef59a73aee6587"; // Twilio auth token
-const twilioClient = new Twilio(accountSid, authToken); // Twilio client initialization
-const twilioContactNumber = "+12057281280"; // Twilio phone number used for sending SMS
+const interval_between_messages = 30; // Milliseconds between each notification message
 
 // RCB tickets booking page URL
 const rcbTicketsPageUrl = "https://shop.royalchallengers.com/ticket";
-
-exports.checkRcbTicket = async (_req, res) => {
-  console.log("nikunj");
-  try {
-    const ContactNumber = "+916397253517"; // Recipient's phone number for notifications
-    const ticketsDate = "2024-05-18";
-    console.log("nikunj2");
-
-    const checkTicket = await checkTicketAvailability(
-      ContactNumber,
-      ticketsDate
-    );
-    res.status(200).json(checkTicket);
-  } catch (e) {
-    res.status(500).json({ e: "internal server error" });
-  }
-};
 
 // Function to fetch webpage content
 function getPage(url) {
@@ -64,7 +42,16 @@ function getDatesOfAvailableTickets(html) {
 }
 
 // Main function to check ticket availability and send notifications
-async function checkTicketAvailability(recipientContactNumber, ticketsDate) {
+async function checkTicketAvailability(
+  id,
+  accountSid,
+  authToken,
+  twilioContactNumber,
+  personalMobileNo,
+  ticketsDate
+) {
+  const twilioClient = new Twilio(accountSid, authToken); // Twilio client initialization
+
   const fetchStatusDelay = 3;
   let ticketsAvailable = false;
   let returnValue;
@@ -90,7 +77,7 @@ async function checkTicketAvailability(recipientContactNumber, ticketsDate) {
           await twilioClient.messages.create({
             from: twilioContactNumber,
             body: `The match tickets for ${ticketsDate} are available. Login to ${rcbTicketsPageUrl} to book the tickets immediately.`,
-            to: recipientContactNumber,
+            to: personalMobileNo,
           });
           console.log(
             `${new Date().toISOString()} Message sent successfully - ${
@@ -102,7 +89,7 @@ async function checkTicketAvailability(recipientContactNumber, ticketsDate) {
             setTimeout(resolve, interval_between_messages)
           );
         }
-
+        await deleteItemById(id);
         break;
       }
     }
@@ -121,3 +108,7 @@ async function checkTicketAvailability(recipientContactNumber, ticketsDate) {
     console.error(`Error occurred: ${error}`);
   }
 }
+
+module.exports = {
+  checkTicketAvailability,
+};
