@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NextButton, PrevButton } from "./HomePage";
 import styled from "styled-components";
+import { backendUrl } from "./Wizard";
 const FormContainer = styled.form`
   max-width: 400px;
   margin: 0 auto;
@@ -63,7 +64,7 @@ const SetupPage = ({ onNextPageClick, onPrevPageClick }) => {
     console.log("data submitted");
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3003/api/items", {
+      const response = await fetch(`${backendUrl}/api/items`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
