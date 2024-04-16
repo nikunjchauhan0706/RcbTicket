@@ -19,7 +19,7 @@ exports.checkRcbTicket = async (_req, res) => {
   console.log("nikunj");
   try {
     const ContactNumber = "+916397253517"; // Recipient's phone number for notifications
-    const ticketsDate = "2024-05-04";
+    const ticketsDate = "2024-05-18";
     console.log("nikunj2");
 
     const checkTicket = await checkTicketAvailability(
@@ -65,7 +65,7 @@ function getDatesOfAvailableTickets(html) {
 
 // Main function to check ticket availability and send notifications
 async function checkTicketAvailability(recipientContactNumber, ticketsDate) {
-  const fetchStatusDelay = 30000;
+  const fetchStatusDelay = 3;
   let ticketsAvailable = false;
   let returnValue;
   try {
