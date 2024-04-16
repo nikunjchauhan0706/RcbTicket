@@ -14,7 +14,7 @@ interval_between_messages = 60  # Seconds between each notification message
 
 # Twilio account details for sending SMS
 account_sid = 'ACcfb63267ec1247ce61512868bfde601e'  # Twilio account SID
-auth_token = 'df4eae1045fa2788a64b9015c0e9e979'  # Twilio auth token
+auth_token = '409f7f8a83a7dccdcdef59a73aee6587'  # Twilio auth token
 client = Client(account_sid, auth_token)  # Twilio client initialization
 twilio_contact_number = "+12057281280"    # Twilio phone number used for sending SMS
 
