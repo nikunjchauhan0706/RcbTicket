@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
 import { FaSearch } from "react-icons/fa"; // Importing search icon from react-icons library
+import { backendUrl } from "./Wizard";
 
 const Text = styled.div`
   margin: 20px;
@@ -82,7 +83,7 @@ const HomePage = ({ onStartClick }) => {
   const handleSearch = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3003/api/getCredentials/+91${number}`
+        `${backendUrl}/api/getCredentials/+91${number}`
       );
       if (response.status === 200) {
         setShowNextButton(true);

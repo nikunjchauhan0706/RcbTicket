@@ -23,7 +23,7 @@ const Title = styled.div`
   color: #212121;
   font-family: "Aeonik", sans-serif;
 `;
-export const url = "https://rcbticket.onrender.com";
+export const backendUrl = "https://rcbticket.onrender.com";
 const Wizard = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const handleNextPageClick = () => {
